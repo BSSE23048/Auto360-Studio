@@ -1,0 +1,12 @@
+/* Refinements layered over the established design. */
+:root{color-scheme:dark}body{padding-bottom:env(safe-area-inset-bottom)}
+.page,.panel,.showroom-layout>*,.capture-layout>*,.page-heading>*,.file-meta>span{min-width:0}
+.page-heading h1{overflow-wrap:anywhere;text-wrap:balance}.file-meta>span,.public-url,.listing-description p,.notice{overflow-wrap:anywhere}
+.button,.icon-button,summary,.back-link{min-height:44px}.button{white-space:normal;text-align:center}.inline-actions{flex-wrap:wrap}
+:focus-visible{outline:2px solid #d3edaa;outline-offset:4px}button:disabled{cursor:not-allowed}
+.buyer-actions{margin-block:16px}.readiness-list{padding-left:22px;line-height:1.9}.slot-assignment{margin-top:18px;padding-top:16px;border-top:1px solid #38443d}
+.viewer-skeleton{min-height:280px;border-radius:16px;background:linear-gradient(110deg,#151e19 30%,#26382c 45%,#151e19 60%);background-size:250% 100%;animation:loading-sheen 2s ease-in-out infinite;display:grid;place-items:center;color:#cad3cc}
+.upload-panel progress{width:100%;accent-color:#d3edaa}.offline-notice{padding:12px 20px;background:#3b301c;color:#fff1d0;text-align:center}
+@keyframes loading-sheen{to{background-position:-200% 0}}
+@media(max-width:600px){input,select,textarea{font-size:16px!important}.container{padding-left:env(safe-area-inset-left);padding-right:env(safe-area-inset-right)}.page-heading h1{font-size:clamp(27px,7.8vw,38px)}.buyer-actions .button{flex:1 1 180px}.upload-actions{flex-wrap:wrap}.upload-actions .button{white-space:normal}.notice{line-height:1.65}.car-choices{overscroll-behavior-x:contain}.form-bottom{position:static}}
+@media(prefers-reduced-motion:reduce){.viewer-skeleton{animation:none}}

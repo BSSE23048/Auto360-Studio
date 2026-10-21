@@ -4,7 +4,7 @@ export interface CaptureSlot { id: string; title: string; group: PhotoGroup; ang
 export interface CarDetails {
   make: string; model: string; year: string; trim: string; mileage: string;
   price: string; currency: string; location: string; transmission: string;
-  fuel: string; color: string; description: string;
+  fuel: string; color: string; description: string; whatsapp?: string;
 }
 export interface Project {
   id: string; createdAt: string; updatedAt: string; frameCount: FrameCount;
@@ -74,7 +74,7 @@ export function slots(count: FrameCount): CaptureSlot[] {
   return [...Array.from({ length: count }, (_, index) => {
     const angle = index * 360 / count;
     return { id: `ext-${angle}`, title: position(angle), group: 'exterior' as const, angle,
-      instruction: 'Keep the whole car in frame with space around the bumpers. Hold the camera at headlight height, use the same distance and keep the horizon level.' };
+      instruction: 'Start about 3–5 metres away; adjust until the whole car fits with space around both bumpers. Use even daylight, avoid glare and keep the camera at headlight height. Keep the same distance and level horizon as you move clockwise.' };
   }), ...INSPECTIONS, ...EXTRAS];
 }
 export function title(project: Project): string { return [project.details.year, project.details.make, project.details.model].filter(Boolean).join(' ') || 'Untitled showroom'; }

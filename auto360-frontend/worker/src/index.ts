@@ -189,10 +189,11 @@ async function route(request: Request, env: Env, ctx: ExecutionContext): Promise
     if (path.length === 2 && method === 'PUT') {
       const data = await body(request);
       if (data.frameCount !== 24 && data.frameCount !== 48) throw new HttpError(400, 'Invalid capture plan');
-      const fields = ['make','model','year','trim','mileage','price','currency','location','transmission','fuel','color','description'];
+      const fields = ['make','model','year','trim','mileage','price','currency','location','transmission','fuel','color','description','whatsapp'];
       if (!data.details || typeof data.details !== 'object' || Array.isArray(data.details)) throw new HttpError(400, 'Car details required');
       const source = data.details as Record<string, unknown>; const details: Record<string,string> = {};
       for (const key of fields) { const value = source[key] ?? ''; if (typeof value !== 'string' || value.length > (key === 'description' ? 3000 : 120)) throw new HttpError(400, 'Invalid listing details'); details[key] = value.trim(); }
+      if(details.whatsapp && !/^\+[1-9]\d{6,14}$/.test(details.whatsapp)) throw new HttpError(400,'Use an international WhatsApp number such as +923001234567, or leave it empty.');
       for (const key of ['year','mileage','price']) if (details[key] && (!/^\d+(\.\d{1,2})?$/.test(details[key]) || !Number.isFinite(Number(details[key])))) throw new HttpError(400, 'Invalid numeric listing details');
       if (details.year && (!/^\d{4}$/.test(details.year) || Number(details.year)<1886 || Number(details.year)>new Date().getFullYear()+1)) throw new HttpError(400,'Invalid model year');
       await rpc(env,'save_vehicle',{p_owner:owner,p_id:vehicleId,p_frames:data.frameCount,p_details:details}); return json({ok:true});
@@ -206,6 +207,11 @@ async function route(request: Request, env: Env, ctx: ExecutionContext): Promise
         const media = await db<Media[]>(env,`media?id=eq.${id(path[3])}&vehicle_id=eq.${vehicleId}&owner_id=eq.${owner}`);
         if (!media[0]) throw new HttpError(404,'Photo not found'); return serveMedia(request,env,ctx,media[0],false);
       }
+    }
+    if (path[2] === 'media' && path.length === 5 && path[4] === 'slot' && method === 'POST') {
+      const data=await body(request);
+      await rpc(env,'assign_photo_slot',{p_owner:owner,p_vehicle:vehicleId,p_media:id(path[3]),p_slot:required(data.slotId,60)});
+      return json({ok:true});
     }
     if (path[2] === 'uploads' && path.length === 3 && method === 'POST') {
       const data = await body(request); const uploadId = crypto.randomUUID(); const token = crypto.randomUUID()+crypto.randomUUID();

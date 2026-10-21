@@ -15,9 +15,9 @@ export async function api<T>(path: string, init: RequestInit = {}, anonymous = f
   if (!response.ok) { const error = await response.json().catch(() => ({})) as { error?: string }; throw new ApiError(response.status,error.error || `Request failed (${response.status})`); }
   return response.status === 204 ? undefined as T : response.json() as Promise<T>;
 }
-async function blob(path: string): Promise<Blob> {
+async function blob(path: string, signal?: AbortSignal): Promise<Blob> {
   const token = (await supabase?.auth.getSession())?.data.session?.access_token;
-  const response = await fetch(`${base}${path}`, { headers: token ? { Authorization: `Bearer ${token}` } : {} });
+  const response = await fetch(`${base}${path}`, { signal, headers: token ? { Authorization: `Bearer ${token}` } : {} });
   if (!response.ok) throw new Error('Unable to load this private image.');
   return response.blob();
 }
@@ -79,4 +79,4 @@ export const cloudRepository: ShowroomRepository = {
   },
   deletePhoto: id => api<void>(`/media/${id}`, { method: 'DELETE' }),
 };
-export async function loadPrivateImage(url: string): Promise<Blob> { return blob(url.startsWith(base) ? url.slice(base.length) : url); }
+export async function loadPrivateImage(url: string, signal?: AbortSignal): Promise<Blob> { return blob(url.startsWith(base) ? url.slice(base.length) : url, signal); }

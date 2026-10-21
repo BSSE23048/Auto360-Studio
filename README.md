@@ -67,3 +67,41 @@ If dependencies are absent, run `npm install` manually in `auto360-frontend` and
 - Replace/remove photos; inspect quota overlap and delayed cleanup. Let an upload expire; attempt replay before and after signature expiry. Verify actual objects disappear before reservations are released.
 - Publish a complete gallery; view it without login and share `/car/{slug}` on WhatsApp. Unpublish and retry the **Worker** media URL, including an edge-cache hit: access must fail. Test explicit original inspection/zoom and format fallback.
 - Verify legacy R2 rows/IDs survive migration, replacement retains the existing media ID, and old queue entries are never falsely reported as Cloudinary-deleted.
+
+
+## Final release preparation (static review only)
+
+This pass adds mobile spacing/safe-area/focus refinements, lazy viewer loading with a retry boundary, offline feedback, cancellable public-manifest reads, native sharing/copy fallback, optional public seller WhatsApp contact, publication guidance and metadata-only photo-position correction. No runtime, cloud or device checks were executed.
+
+**Apply new migration 005_photo_slot_assignment.sql after 001–004**, in Supabase SQL Editor, before deploying this Worker. Do not rerun applied migrations. Its service-role-only RPC checks ownership and allowed capture slots, rejects active uploads, moves/swaps metadata atomically and unpublishes the listing. Original IDs/keys/bytes and storage accounting stay unchanged. There are no new secrets or dependencies.
+
+For a fresh installation, apply migrations 001 through 005 in order. Enable Supabase email/password Auth and confirmation, set the Site URL to your Pages origin, and allow its auth redirect URL. Configure the existing Vite Supabase URL/anon key/Worker URL through Pages environment settings. Configure Worker secrets and the reviewed **signed** Cloudinary preset using the earlier sections; never use an unsigned preset or public raw delivery fallback.
+
+The static HTML now includes generic Open Graph metadata. Per-car crawler previews/images require server-rendered HTML or a Pages Function that reads only published listings; this release does not pretend client-side metadata updates work for WhatsApp crawlers. No seller image is embedded in generic metadata. Hotspots still require calibrated per-car coordinates; panorama/transition capture and 36-frame database support remain outside the existing manifest.
+
+Photo uploads show indeterminate save/verification progress, not invented transfer percentages. Existing originals/previews and quota/credit checks remain in place. Account capabilities and limits must be confirmed in the Cloudinary dashboard. Monitor credits, bandwidth, Admin API usage, application reservations and cleanup backlog separately.
+
+### Manual release checklist — not run
+
+- Register, confirm email, log in/out; create, edit, resume and delete a listing.
+- Upload, replace and remove originals; try supported/unsupported formats, oversize files and quota exhaustion. Compare a downloaded original with its source. No original should load on initial gallery opening.
+- Move into an empty photo slot and swap occupied slots. Confirm unchanged media IDs/bytes/storage usage, blocked reassignment during pending uploads, automatic unpublishing, and rejection for another seller’s listing.
+- Rotate across 0 degrees both ways; open interior/part photos and calibrated hotspots, return to the previous angle, inspect/download originals and close during loading.
+- Publish, open the stable public URL while logged out, share/copy it and send a vehicle-specific WhatsApp inquiry. Confirm the phone is optional and only shown from published data.
+- Unpublish and request both cached public media and its manifest again: access must fail. Another user and anonymous users must not access draft endpoints. Previously downloaded files cannot be remotely revoked.
+- Test 320/360/375/390/430px layouts, portrait/landscape, keyboard focus, reduced motion, offline/retry and slow loading on real iPhone Safari and Android Chrome. Test vertical scrolling before enabling pinch/pan.
+- Complete checks before deployment; a successful build alone does not verify cloud permissions or real devices.
+
+From the repository root, run manually (existing dependencies assumed):
+
+```powershell
+Set-Location .\auto360-frontend
+npm run build
+Set-Location .\worker
+npm run typecheck
+# After applying migration 005 and completing acceptance checks:
+npm run deploy
+npx wrangler pages deploy ..\dist --project-name auto360-studio --branch main
+```
+
+For local acceptance testing, run `npm run dev` from `auto360-frontend`. Configure URLs/origins and secrets manually using the earlier setup section. No secret values were read or added to this repository.
