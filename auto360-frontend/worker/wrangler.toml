@@ -1,0 +1,18 @@
+name = "auto360-api"
+main = "src/index.ts"
+compatibility_date = "2025-03-01"
+workers_dev = true
+
+[vars]
+SUPABASE_URL = "https://ytcjeonawydsuqjpzrxq.supabase.co"
+FRONTEND_ORIGIN = "https://auto360-studio.pages.dev"
+ALLOWED_ORIGINS = "https://auto360-studio.pages.dev,http://localhost:5173"
+
+CLOUDINARY_UPLOAD_PRESET = "auto360_signed_raw"
+MAX_ORIGINAL_PIXELS = "25000000"
+
+[triggers]
+crons = ["*/15 * * * *"]
+
+[observability]
+enabled = false
