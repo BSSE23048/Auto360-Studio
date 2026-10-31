@@ -77,7 +77,7 @@ Retain Supabase Auth settings and existing URLs. `worker/wrangler.toml` retains 
 First perform the maintenance/export steps above and apply migration 004 manually in Supabase SQL Editor. Then run these commands yourself. No installation is needed if existing project dependencies are already installed.
 
 ```powershell
-Set-Location "C:\Users\MAF Tech\OneDrive\Pictures\Documents\GitHub\Auto360-Studio\auto360-frontend\worker"
+Set-Location .\auto360-frontend\worker
 npx wrangler login
 npx wrangler secret put CLOUDINARY_CLOUD_NAME
 npx wrangler secret put CLOUDINARY_API_KEY
