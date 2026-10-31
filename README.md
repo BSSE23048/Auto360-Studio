@@ -1,5 +1,42 @@
 # Auto360 Studio
 
+A photo-based vehicle inspection viewer for sellers who want to present a car's exterior, interior and detail photographs in one shareable workflow.
+
+## Project at a glance
+
+- **Frontend:** React, TypeScript and Vite.
+- **Backend:** Supabase Auth/PostgreSQL and a Cloudflare Worker API.
+- **Media:** authenticated Cloudinary storage and delivery.
+- **Source:** [BSSE23048/Auto360-Studio](https://github.com/BSSE23048/Auto360-Studio).
+- **Maintainer:** [Agha Shoaib Zaib](https://github.com/BSSE23048).
+- **Status:** implementation present; cloud migration, deployment and device acceptance remain unverified.
+
+The viewer uses real uploaded frames, with separate previews and explicit original-photo inspection. It does not generate missing angles. Hotspots need per-car calibration; the default hotspot registry is empty.
+
+## Local frontend preview
+
+Use Node.js 22 and npm. From the repository root:
+
+```sh
+cd auto360-frontend
+npm ci
+cp .env.example .env.local
+npm run dev
+```
+
+On Windows, use `Copy-Item .env.example .env.local` instead of `cp`. Fill the public Supabase configuration and Worker URL for an isolated test environment. Browser setup alone does not provision the database, Worker or media service.
+
+`npm run build` checks TypeScript and builds the frontend. In `auto360-frontend/worker`, run `npm ci` and `npm run typecheck`. No automated viewer test suite is configured yet.
+
+## Demonstration and screenshots
+
+Use a car/photo set you have permission to show. Demonstrate rotation, missing-frame feedback, detail inspection, an explicit original download and the public/draft boundary. Capture mobile and desktop screenshots only after the actual workflow passes. No live demo or screenshots are claimed by this documentation update.
+
+## Configuration and release notes
+
+The operational instructions below describe provider setup, migration risks and acceptance gates. Preserve originals and backups; do not run legacy and replacement cleanup Workers concurrently.
+
+
 Existing React/Supabase application with a Cloudflare Worker API and **Cloudinary Free** storage. No dependencies were added for this migration. Commands, builds, cloud operations and migrations have **not** been executed or verified by the implementation agent.
 
 ## Cloudinary configuration
